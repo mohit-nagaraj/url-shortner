@@ -7,3 +7,6 @@ DB_PASS=""
 APP_PORT=":xxxx"
 DOMAIN="xxxx:yyyy"
 API_QUOTA=number
+
+# To start the project
+docker-compose up -d
