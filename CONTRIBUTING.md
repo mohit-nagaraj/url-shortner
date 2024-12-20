@@ -25,15 +25,34 @@ Thank you for considering contributing to our project! Here are some guidelines 
 Below are the primary routes defined in the project:
 
 - `POST /shorten`: Endpoint to create a new shortened URL.
+  - **Request**: Expects a JSON body with the original URL, optional custom short URL, and optional expiry time.
+  - **Response**: Returns the original URL, the shortened URL, expiry time, remaining rate limit, and rate limit reset time.
+  - **Logic**:
+    - Parses the request body and validates the URL.
+    - Implements rate limiting by checking and updating the user's IP in Redis.
+    - Enforces HTTPS and prevents domain errors.
+    - Generates a unique short URL or uses the provided custom short URL.
+    - Stores the shortened URL in Redis with an expiry time.
+    - Returns the response with URL details and rate limit information.
+  
 - `GET /:shortURL`: Endpoint to redirect to the original URL.
+  - **Logic**:
+    - Retrieves the original URL from Redis using the provided short URL.
+    - Redirects the user to the original URL.
+
 - `DELETE /:shortURL`: Endpoint to delete a shortened URL.
+  - **Logic**:
+    - Removes the short URL from Redis.
 
 ## Logic
 The core logic includes:
 
 - **URL Shortening**: Generates a unique short code for the provided URL and stores it in Redis.
 - **Redirection**: Retrieves the original URL from Redis when a short URL is accessed and redirects the user.
-- **Expiration**: Manages the expiration of URLs based on predefined criteria.
+- **Rate Limiting**: Limits the number of URL shortening requests per user within a specified time frame.
+- **HTTPS Enforcement**: Ensures all stored URLs are converted to HTTPS.
+- **Domain Error Prevention**: Prevents shortening of the service's own domain to avoid infinite loops.
+- **Expiration Management**: Manages the expiry of shortened URLs based on user-defined or default criteria.
 
 ## Submitting Changes
 1. **Commit your changes**: Use descriptive commit messages to explain what you have done.
